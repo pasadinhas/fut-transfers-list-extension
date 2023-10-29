@@ -1,16 +1,26 @@
 {
+  "manifest_version": 3,
   "name": "FUT Transfers List Prices",
-  "version": "1.0",
-  "manifest_version": 2,
-  "permissions": ["storage", "https://www.futbin.com/"],
+  "version": "2.0",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://www.futbin.com/"
+  ],
   "content_scripts": [
     {
-      "matches": ["https://www.ea.com/fifa/ultimate-team/web-app/"],
-      "js": ["extension/content.js"]
+      "matches": ["https://www.ea.com/ea-sports-fc/ultimate-team/web-app/*"],
+      "js": ["extension/content.js"],
+      "world": "MAIN"
     }
   ],
   "background": {
-    "scripts": ["extension/background.js"]
+    "service_worker": "extension/background.js"
   },
-  "browser_action": {}
+  "action": {},
+  "externally_connectable": {
+    "matches": ["https://www.ea.com/*"]
+  }
 }

@@ -21,7 +21,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "move": "yarn build && rm -rf static && mv build/static static"
+    "move": "yarn build && rm -rf static && cp -r build/static static"
   },
   "eslintConfig": {
     "extends": [

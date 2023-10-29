@@ -1,11 +1,3 @@
-function inject(func) {
-  var actualCode = "(" + func + ")();";
-  var script = document.createElement("script");
-  script.textContent = actualCode;
-  (document.head || document.documentElement).appendChild(script);
-  script.remove();
-}
-
 document.addEventListener("eaData", function (e) {
   console.log("Content script received: ", e);
   const transfersListItems = e.detail;
@@ -55,13 +47,12 @@ document.addEventListener("eaData", function (e) {
   */
 });
 
-inject(() => {
-  const poll = setInterval(() => {
-    const collection =
-      services?.SBC?.itemRepository?.transfer?._collection || {};
-    if (Object.keys(collection).length) {
-      document.dispatchEvent(new CustomEvent("eaData", { detail: collection }));
-      clearInterval(poll);
-    }
-  }, 1000);
-});
+console.log("Content script running...")
+
+const poll = setInterval(() => {
+  const collection = services?.SBC?.itemRepository?.transfer?._collection || {};
+  if (Object.keys(collection).length) {
+    chrome.runtime.sendMessage("ojdoehhgfmochaadoomgaafgljlkkjnm", collection)
+    clearInterval(poll);
+  }
+}, 1000);

@@ -11,11 +11,30 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
   }
 });
 
+chrome.runtime.onMessageExternal.addListener((transfersListItems) => {
+  console.log("received external message: ", transfersListItems)
+  chrome.storage.local.set(
+    {
+      data: {
+        version: 1,
+        updatedAt: Date.now(),
+        transfersList: transfersListItems,
+      },
+    },
+    () => {
+      if (chrome.runtime.lastError) {
+        console.warn("Chrome error: ", chrome.runtime.lastError);
+      } else {
+        console.log(`Transfers list data saved to Chrome local storage.`);
+      }
+    }
+  );
+})
 
-chrome.browserAction.onClicked.addListener(function(tab) {
+chrome.action.onClicked.addListener(function(tab) {
     console.log('clicked!')
     chrome.tabs.create({
-        'url': chrome.extension.getURL('index.html')
+        'url': chrome.runtime.getURL('index.html')
     }, function(tab) {
         if (chrome.runtime.lastError) {
             console.error(chrome.runtime.lastError.message, chrome.runtime.lastError)
