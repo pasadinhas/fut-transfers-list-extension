@@ -135,8 +135,8 @@ function App() {
         fetchPrices(transfersListItems, setPrices);
         setTransfersListItems(transfersListItems);
         setLoading(false);
-        setTheme(theme);
-        setUiScale(uiScale);
+        theme && setTheme(theme);
+        uiScale && setUiScale(uiScale);
         window._transfersList = transfersListItems;
         console.log({ transfersList });
       });
