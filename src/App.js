@@ -4,7 +4,7 @@ import ThemePicker from "./ThemePicker";
 import UiScaleControl from "./UiScaleControl";
 import RatingRange from "./RatingRange";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCloudArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { faCloudArrowDown, faPersonWalkingArrowLoopLeft } from "@fortawesome/free-solid-svg-icons";
 
 function imgsrc(id) {
   return `https://www.ea.com/fifa/ultimate-team/web-app/content/22747632-e3df-4904-b3f6-bb0035736505/2022/fut/items/images/mobile/portraits/${id}.png`
@@ -171,12 +171,12 @@ function App() {
                 <tr>
                   <th></th>
                   <th></th>
+                  <th></th>
                   <th className="Left">Name</th>
                   <th>Price</th>
                   <th>Price Range</th>
                   <th>Last Update</th>
                   <th>More Prices</th>
-                  <th>Dupe</th>
                   <th>Quick Sell Loss</th>
                 </tr>
               </thead>
@@ -212,6 +212,7 @@ function App() {
                           </div>
                         )}
                       </td>
+                      <td>{item.duplicateId ? "" : <FontAwesomeIcon icon={faPersonWalkingArrowLoopLeft} />}</td>
                       <td className="Left PlayerName">
                         {item?._staticData?.name || "<no name>"}
                       </td>
@@ -249,7 +250,6 @@ function App() {
                           <td></td>
                           </>
                       }
-                      <td>{item.duplicateId ? "" : "Not dupe"}</td>
                       <td><span className="CoinValue">{fmt.format(Math.floor(prices[item.definitionId] * 0.95 - item.discardValue))}</span></td>
                     </tr>
                   ))}

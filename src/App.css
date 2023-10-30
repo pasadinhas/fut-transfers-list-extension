@@ -62,6 +62,22 @@ td, th {
   margin: 0;
 }
 
+td:nth-child(1),th:nth-child(1) {
+  width: calc(var(--table-height) * 1.4);
+}
+
+td:nth-child(2),th:nth-child(2) {
+  width: calc(var(--table-height) * 0.75);
+}
+
+td:nth-child(3),th:nth-child(3) {
+  width: calc(var(--table-height) * 0.3);
+}
+
+td:nth-child(4),th:nth-child(4) {
+  width: 1fr;
+}
+
 td > .FontAwesomeIcon:not(:first-child) {
   margin-left: 0.5em;
 }
@@ -107,6 +123,7 @@ tbody tr:nth-child(2n + 1) {
 
 .Rating {
   border-radius: 3px;
+  margin: auto;
 }
 
 .RatingNumber {
