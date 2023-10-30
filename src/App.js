@@ -31,6 +31,8 @@ function rarity(item) {
       return `Rare`;
     case 3:
       return `TOTW`;
+    case 53:
+      return `Libertadores`
     default: {
       console.log("Item version unmmaped: ", item);
       return "Unknown";
@@ -91,7 +93,7 @@ function App() {
   const [nameFilter, setNameFilter] = useState("");
   const [minRatingFilter, setMinRatingFilter] = useState(0);
   const [maxRatingFilter, setMaxRatingFilter] = useState(100);
-  const [tableRowHeight, setTableRowHeight] = useState(5.5);
+  const [tableRowHeight, setTableRowHeight] = useState(5);
 
   function filter_item(item) {
     function filter_name(item) {
@@ -228,7 +230,7 @@ function App() {
                       <td>
                         <FontAwesomeIcon icon="arrow-alt-from-right"></FontAwesomeIcon>
                       </td>
-                      <td className="Left">
+                      <td className="Left PlayerName">
                         {item?._staticData?.name || "<no name>"}
                       </td>
                       <td>
