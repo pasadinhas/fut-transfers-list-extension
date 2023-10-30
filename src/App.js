@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import ThemePicker from "./ThemePicker";
+import UiScaleControl from "./UiScaleControl";
+import RatingRange from "./RatingRange";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClone } from "@fortawesome/free-regular-svg-icons";
-import { faShieldAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCloudArrowDown } from "@fortawesome/free-solid-svg-icons";
 
 function imgsrc(id) {
   return `https://www.ea.com/fifa/ultimate-team/web-app/content/22747632-e3df-4904-b3f6-bb0035736505/2022/fut/items/images/mobile/portraits/${id}.png`
@@ -91,9 +93,19 @@ function App() {
   const [prices, setPrices] = useState({});
   const [detailedPrices, setDetailedPrices] = useState({});
   const [nameFilter, setNameFilter] = useState("");
-  const [minRatingFilter, setMinRatingFilter] = useState(0);
-  const [maxRatingFilter, setMaxRatingFilter] = useState(100);
-  const [tableRowHeight, setTableRowHeight] = useState(5);
+  const [minRatingFilter, setMinRatingFilter] = useState(47);
+  const [maxRatingFilter, setMaxRatingFilter] = useState(99);
+  const [currentTheme, setTheme] = useState("Dark");
+  const [uiScale, setUiScale] = useState(5);
+
+  const setThemeWithPersistance = (theme) => {
+    setTheme(theme);
+    chrome.storage.local.set({theme})
+  }
+  const setUiScaleWithPersistance = (uiScale) => {
+    setUiScale(uiScale);
+    chrome.storage.local.set({uiScale})
+  }
 
   function filter_item(item) {
     function filter_name(item) {
@@ -112,19 +124,19 @@ function App() {
       return item._rating >= minRatingFilter && item._rating <= maxRatingFilter;
     }
 
-    const result = filter_name(item) && filter_rating(item);
-    console.log("Filering", item, result)
-    return result;
+    return filter_name(item) && filter_rating(item);
   }
 
   useEffect(() => {
     (async function () {
-      chrome.storage.local.get(["data"], function ({ data }) {
+      chrome.storage.local.get(["data", "theme", "uiScale"], function ({ data, theme, uiScale }) {
         const { transfersList, updatedAt, version } = data;
         const transfersListItems = Object.values(transfersList);
         fetchPrices(transfersListItems, setPrices);
         setTransfersListItems(transfersListItems);
         setLoading(false);
+        setTheme(theme);
+        setUiScale(uiScale);
         window._transfersList = transfersListItems;
         console.log({ transfersList });
       });
@@ -133,83 +145,45 @@ function App() {
 
 
   window.FutTransfersList = { items: transfersListItems }
-  console.log(transfersListItems);
+  console.log({transfersListItems});
 
   return (
-    <div className="App">
+    <div className={"App " + currentTheme}>
       {loading ? (
         <h1>{loading}</h1>
       ) : (
         <>
-          <div class="Controls">
+          <header class="Controls">
             <div className="ControlGroup">
-              <input
-                className="Control-1-1"
-                type="text"
-                placeholder="Filter players"
-                onChange={(e) => setNameFilter(e.target.value.toLowerCase())}
-              />
+              <input className="PlayerSearch" type="text" placeholder="Filter players" onChange={(e) => setNameFilter(e.target.value.toLowerCase())}/>
             </div>
             <div className="ControlGroup">
-              <input
-                className="Control-2-1"
-                type="text"
-                placeholder="Min. Rating"
-                onChange={(e) => {
-                  if (e.target.value == "") {
-                    setMinRatingFilter(0);
-                    return;
-                  }
-
-                  e.target.value.replace(/[^\d.]/gi, "");
-                  const value = parseInt(e.target.value, 10);
-
-                  if (value >= 0 && value <= 100) {
-                    setMinRatingFilter(value);
-                  } else {
-                    e.target.value = minRatingFilter || "";
-                  }
-                }}
-              />
-              <input
-                className="Control-2-2"
-                type="text"
-                placeholder="Max. Rating"
-                onChange={(e) => {
-                  if (e.target.value == "") {
-                    setMaxRatingFilter(100);
-                    return;
-                  }
-
-                  e.target.value.replace(/[^\d.]/gi, "");
-                  const value = parseInt(e.target.value, 10);
-
-                  if (value >= 0 && value <= 100) {
-                    setMaxRatingFilter(value);
-                  } else {
-                    e.target.value = maxRatingFilter || "";
-                  }
-                }}
-              />
+              <RatingRange minRating={minRatingFilter} setMinRating={setMinRatingFilter} maxRating={maxRatingFilter} setMaxRating={setMaxRatingFilter}/>
             </div>
             <div className="ControlGroup">
-              <input
-                type="range"
-                min={2}
-                max={12}
-                step={0.5}
-                value={tableRowHeight}
-                onChange={(e) => setTableRowHeight(e.target.value)}
-              />
+              <UiScaleControl uiScale={uiScale} setUiScale={setUiScaleWithPersistance} />
+              <ThemePicker currentTheme={currentTheme} setTheme={setThemeWithPersistance}/>
             </div>
-          </div>
+          </header>
           <div class="Content">
-            <table style={{ "--table-height": `${tableRowHeight}vh` }}>
+            <table style={{ "--table-height": `${uiScale}vh` }}>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th></th>
+                  <th className="Left">Name</th>
+                  <th>Price</th>
+                  <th>Price Range</th>
+                  <th>Last Update</th>
+                  <th>More Prices</th>
+                  <th>Dupe</th>
+                  <th>Quick Sell Loss</th>
+                </tr>
+              </thead>
               <tbody>
                 {transfersListItems
                   .filter(filter_item)
                   .sort(sort_items)
-                  .map(item => {console.log(item); return item})
                   .map((item) => (
                     <tr key={item.id}>
                       <td>
@@ -228,12 +202,6 @@ function App() {
                         />
                       </td>
                       <td>
-                        <FontAwesomeIcon icon="arrow-alt-from-right"></FontAwesomeIcon>
-                      </td>
-                      <td className="Left PlayerName">
-                        {item?._staticData?.name || "<no name>"}
-                      </td>
-                      <td>
                         {item._rating && (
                           <div
                             className={`Rating RatingNumber ${rarity(
@@ -244,10 +212,11 @@ function App() {
                           </div>
                         )}
                       </td>
-                      <td className="Right">
-                        {prices[item.definitionId]
-                          ? fmt.format(prices[item.definitionId])
-                          : "no data"}
+                      <td className="Left PlayerName">
+                        {item?._staticData?.name || "<no name>"}
+                      </td>
+                      <td className="Right PlayerPrice">
+                        <span className="CoinValue">{prices[item.definitionId] ? fmt.format(prices[item.definitionId]) : "?"}</span>
                       </td>
                       <td>
                         <input
@@ -263,27 +232,25 @@ function App() {
                           <td>
                             <span>{detailedPrices[item.definitionId].updated}</span>
                           </td>
-                          <td>
-                            <span>{detailedPrices[item.definitionId].LCPrice}</span><br/>
-                            <span>{detailedPrices[item.definitionId].LCPrice2}</span><br/>
-                            <span>{detailedPrices[item.definitionId].LCPrice3}</span><br/>
-                            <span>{detailedPrices[item.definitionId].LCPrice4}</span><br/>
-                            <span>{detailedPrices[item.definitionId].LCPrice5}</span>
+                          <td className="LowestPrices">
+                            <span className="CoinValue">{detailedPrices[item.definitionId].LCPrice}</span>
+                            <span className="CoinValue">{detailedPrices[item.definitionId].LCPrice2}</span>
+                            <span className="CoinValue">{detailedPrices[item.definitionId].LCPrice3}</span>
+                            <span className="CoinValue">{detailedPrices[item.definitionId].LCPrice4}</span>
+                            <span className="CoinValue">{detailedPrices[item.definitionId].LCPrice5}</span>
                           </td>
                           </>
-                        : <td colSpan={2}><button
-                            className="FetchFutbinData"
-                            onClick={(e) => fetchDetailedPrice(item.definitionId, detailedPrices, setDetailedPrices)}
-                          >Load</button></td>
+                        : <>
+                          <td>
+                            <FontAwesomeIcon className="FetchFutbinData" 
+                              icon={faCloudArrowDown} 
+                              onClick={e => fetchDetailedPrice(item.definitionId, detailedPrices, setDetailedPrices)}/>
+                          </td>
+                          <td></td>
+                          </>
                       }
                       <td>{item.duplicateId ? "" : "Not dupe"}</td>
-                      <td>
-                        {fmt.format(
-                          Math.floor(
-                            prices[item.definitionId] * 0.95 - item.discardValue
-                          )
-                        )}
-                      </td>
+                      <td><span className="CoinValue">{fmt.format(Math.floor(prices[item.definitionId] * 0.95 - item.discardValue))}</span></td>
                     </tr>
                   ))}
               </tbody>

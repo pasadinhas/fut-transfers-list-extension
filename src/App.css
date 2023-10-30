@@ -7,82 +7,48 @@
   color: var(--color-light);
   text-align: center;
   display: flex;
+  flex-direction: column;
   width: 100vw;
-  justify-content: center;
   background-image: linear-gradient(to right top, #4a506d, #325b7a, #00677e, #007075, #007862, #047e60, #10835d, #1d8959, #199072, #279687, #3e9b99, #58a0a6);
   background-attachment: fixed;
   min-height: 100vh;
+  transition: background-image 5.3 ease-in-out;
+  font-weight: 600;
+}
+
+.App.Dark {
+  background-image: linear-gradient(to right top, #3e4461, rgb(41, 32, 74), rgb(22, 17, 42), rgb(35, 25, 75));
 }
 
 .App .Controls {
-  background: rgba(0, 0, 0, 0.3);
-  width: 25vw;
+  background: rgba(0, 0, 0, 0.2);
+  width: 100%;
+  height: 60px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  justify-content: space-around;
 }
 
 .ControlGroup {
   display: flex;
-  width: 20vw;
-  margin: 1rem 0;
+  min-width: 20vw;
+  margin: auto;
 }
 
-input.Control-2-1 {
-  width: 40%;
-  margin-right: 5%;
+.PlayerSearch {
+  width: 80%;
 }
-
-
-input.Control-2-2 {
-  width: 40%;
-  margin-left: 5%;
-}
-
-input.Control-1-1 {
-  width: 100%;
-}
-
-.App .Controls input {
-  color: var(--color-light);
-  height: 2.5rem;
-  padding: 0px 0.5rem;
-  font-size: 1rem;
-  line-height: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
-  appearance: none;
-  border-radius: 0px;
-  outline: none;
-}
-
 
 .App .Content {
-  width: 75vw;
+  width: 100%;
   padding: 1rem;
   font-size: calc(var(--table-height) * 0.25);
-}
-
-.App-header {
-  padding: 5em;
-  background-color: #282c34;
-  min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
-
-.App-link {
-  color: #61dafb;
-}
-
 
 .App table {
   border-collapse: collapse;
-  max-width: 90vw;
+  width: 90vw;
 }
 
 .App table tr {
@@ -90,10 +56,10 @@ input.Control-1-1 {
   height: var(--table-height);
 }
 
-
-.App table tr td {
+td, th {
   height: var(--table-height);
-  padding: calc(var(--table-height) * 0.1) 1.5vw;
+  padding: calc(var(--table-height) * 0.05) 1vh;
+  margin: 0;
 }
 
 td > .FontAwesomeIcon:not(:first-child) {
@@ -116,12 +82,27 @@ td > .FontAwesomeIcon:not(:first-child) {
   text-align: right;
 }
 
-.PlayerName,.Content {
-  font-weight: 600;
+.PlayerName {
+  min-width: 15vw;
 }
 
-tr:nth-child(2n) {
-  background-color: rgba(255,255,255,0.05);
+tbody tr:nth-child(2n) {
+  background-color: rgba(255,255,255,0.03);
+}
+
+tbody tr:nth-child(2n + 1) {
+  background-color: rgba(0,0,0,0.03);
+}
+
+.PlayerPrice {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  gap: 3px;
+}
+
+.PlayerPrice img {
+  height: calc(var(--table-height) * 0.23);
 }
 
 .Rating {
@@ -179,21 +160,41 @@ tr:nth-child(2n) {
   background: #a17d53;
 }
 
+.LowestPrices {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.CoinValue {
+  position: relative;
+}
+
+.CoinValue::after {
+  content: '';
+  position: absolute;
+  height: 70%;
+  aspect-ratio: 1;
+  background-image: url("https://www.ea.com/ea-sports-fc/ultimate-team/web-app/images/coinIcon.png");
+  background-size: cover;
+  translate: 2px 25%;
+}
 /** Input type Range */
 
-input[type=range] {
+tbody input[type=range] {
   background: transparent;
   height: 100%;
   -webkit-appearance: none;
   width: 100%;
 }
-input[type=range]::-webkit-slider-runnable-track {
+tbody input[type=range]::-webkit-slider-runnable-track {
   width: 100%;
   height: 2px;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.2);
 }
-input[type=range]::-webkit-slider-thumb {
+tbody input[type=range]::-webkit-slider-thumb {
   background: rgba(255, 255, 255, 0.2);
   height: 8px;
   width: 8px;
@@ -203,31 +204,107 @@ input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
   margin-top: -3px;
 }
-input[type=range]:disabled , 
-input[type=range]:disabled::-webkit-slider-thumb, 
-input[type=range]:disabled::-webkit-slider-runnable-track {
+tbody input[type=range]:disabled , 
+tbody input[type=range]:disabled::-webkit-slider-thumb, 
+tbody input[type=range]:disabled::-webkit-slider-runnable-track {
   cursor: default;
 }
 
-button {
+.FetchFutbinData {
   color: var(--color-light);
-  height: calc(var(--table-height) * 0.8);
-  padding: calc(var(--table-height) * 0.1) calc(var(--table-height) * 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 0px;
+  cursor: pointer;
+  font-size: calc(var(--table-height) * 0.25);
 }
 
-button:hover {
-  background-color: rgba(255, 255, 255, 0.10);
-  border-color: rgba(255, 255, 255, 0.15);;
-}
-
-button:active {
-  transform: translate(0, 2px);
+.FetchFutbinData:hover {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 ::placeholder {
   color: var(--color-light);
   opacity: 0.5; /* Firefox */
+}
+
+/** Begin - Theme Picker */
+
+.theme-picker {
+  height: 20px;
+  width: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin: auto;
+  border-radius: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  cursor: pointer;
+  user-select: none;
+}
+
+.theme-picker::before {
+  content: "";
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255);
+  border-radius: 50%;
+  inset: 2px;
+  transition: translate .3s ease-in-out;
+  
+}
+
+.theme-picker.Dark::before {
+  translate: 20px 0;
+}
+
+/** End - Theme Picker */
+
+/** Begin - Ui Scale Control */
+
+.ui-scale-control {
+  position: relative;
+  height: 30px;
+  width: 60px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  margin: auto;
+  border-radius: 20px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  overflow: hidden;
+}
+
+.ui-scale-control > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 50%;
+  height: 100%;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ui-scale-control > div:first-child {
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ui-scale-control > div:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/** End - Ui Scale Control */
+
+.App .Controls input[type=text] {
+  height: 2rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 20px;
+  color: var(--color-light);
+  padding: 0px 0.5rem;
+  font-size: 1rem;
+  line-height: 1rem;
+  appearance: none;
+  outline: none;
 }

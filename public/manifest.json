@@ -14,6 +14,10 @@
       "matches": ["https://www.ea.com/ea-sports-fc/ultimate-team/web-app/*"],
       "js": ["extension/content.js"],
       "world": "MAIN"
+    },
+    {
+      "matches": ["https://www.ea.com/ea-sports-fc/ultimate-team/web-app/*"],
+      "js": ["extension/content_extension_id.js"]
     }
   ],
   "background": {
