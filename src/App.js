@@ -191,7 +191,7 @@ function App() {
                           className={`PlayerPortrait Rating ${rarity(
                             item
                           )} ${bronzeSilverGold(item)}`}
-                          src={`https://cdn.futbin.com/content/fifa24/img/players/${item._metaData.id}.png?v=23`}
+                          src={`https://cdn.futbin.com/content/fifa24/img/players/${item._metaData?.id}.png?v=23`}
                           onError={(e) => {
                             if (e.target.src == imgsrc(item._metaData?.id)) {
                               console.warn("No image for item: ", item);
