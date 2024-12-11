@@ -11,24 +11,36 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
   }
 });
 
-chrome.runtime.onMessageExternal.addListener((transfersListItems) => {
-  console.log("received external message: ", transfersListItems)
-  chrome.storage.local.set(
-    {
-      data: {
-        version: 1,
-        updatedAt: Date.now(),
-        transfersList: transfersListItems,
-      },
-    },
-    () => {
+chrome.runtime.onMessageExternal.addListener((message) => {
+  console.log("received external message: ", message)
+  if (message.clubItems) {
+    chrome.storage.local.set({
+        clubItems: message.clubItems
+    }, () => {
       if (chrome.runtime.lastError) {
         console.warn("Chrome error: ", chrome.runtime.lastError);
       } else {
-        console.log(`Transfers list data saved to Chrome local storage.`);
+        console.log(`Club items data saved to Chrome local storage.`);
       }
-    }
-  );
+    })
+  } else {
+    chrome.storage.local.set(
+      {
+        data: {
+          version: 1,
+          updatedAt: Date.now(),
+          transfersList: message,
+        },
+      },
+      () => {
+        if (chrome.runtime.lastError) {
+          console.warn("Chrome error: ", chrome.runtime.lastError);
+        } else {
+          console.log(`Transfers list data saved to Chrome local storage.`);
+        }
+      }
+    );
+  }
 })
 
 chrome.action.onClicked.addListener(function(tab) {

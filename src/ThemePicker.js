@@ -6,7 +6,7 @@ function swapTheme(currentTheme) {
 }
 function ThemePicker({ currentTheme, setTheme }) {
     return <>
-        <div className={"theme-picker " + currentTheme} data-theme={currentTheme} onClick={(e) => setTheme(swapTheme(currentTheme))}>
+        <div className={"toggle " + currentTheme} data-theme={currentTheme} data-value={currentTheme == "Dark" ? 1 : 0} onClick={(e) => setTheme(swapTheme(currentTheme))}>
             <FontAwesomeIcon icon={faMoon}/>
             <FontAwesomeIcon icon={faSun} />
         </div>

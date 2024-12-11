@@ -7,7 +7,7 @@
     "activeTab"
   ],
   "host_permissions": [
-    "https://www.futbin.com/"
+    "https://www.fut.gg/"
   ],
   "content_scripts": [
     {
